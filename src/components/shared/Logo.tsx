@@ -9,7 +9,7 @@ export function Logo() {
         alt="Top Legends"
         width={120}
         height={32}
-        className="h-8 w-auto"
+        className="h-8 w-auto dark:invert"
         priority
       />
     </Link>
