@@ -15,7 +15,7 @@ export async function createPreference(data: {
 
   const preference = new Preference(mercadopagoClient);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000");
 
   try {
     const result = await preference.create({
