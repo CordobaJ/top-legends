@@ -20,6 +20,7 @@ export function CheckoutForm() {
   const { data: session } = useSession();
   const { items, getSubtotal, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
@@ -70,6 +71,8 @@ export function CheckoutForm() {
     };
 
     try {
+      setError("");
+
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,7 +80,10 @@ export function CheckoutForm() {
       });
 
       const data = await res.json();
-      if (!res.ok) return;
+      if (!res.ok) {
+        setError(data.error || "Error al crear el pedido");
+        return;
+      }
 
       clearCart();
 
@@ -88,6 +94,11 @@ export function CheckoutForm() {
       });
 
       const payData = await payRes.json();
+
+      if (!payRes.ok) {
+        setError(payData.error || payData.detail || "Error al procesar el pago");
+        return;
+      }
 
       if (payData.sandbox) {
         router.push(`/checkout/success?order=${payData.orderNumber}`);
@@ -155,6 +166,11 @@ export function CheckoutForm() {
         </dl>
       </div>
 
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400">
+          {error}
+        </div>
+      )}
       <Button type="submit" size="lg" className="w-full" loading={loading}>
         Confirmar pedido
       </Button>
