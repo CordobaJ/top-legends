@@ -3,7 +3,10 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 const token = process.env.MERCADOPAGO_ACCESS_TOKEN;
 
 export const mercadopagoClient = token
-  ? new MercadoPagoConfig({ accessToken: token })
+  ? new MercadoPagoConfig({
+      accessToken: token,
+      options: { testToken: true },
+    })
   : null;
 
 export async function createPreference(data: {
