@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { SessionProvider } from "@/components/shared/SessionProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingBall } from "@/components/shared/FloatingBall";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -53,6 +54,7 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            <FloatingBall />
           </ThemeProvider>
         </SessionProvider>
       </body>

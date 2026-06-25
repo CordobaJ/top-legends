@@ -17,6 +17,7 @@ export async function ProductGrid({ searchParams }: ProductGridProps) {
   const minPrice = typeof searchParams.minPrice === "string" ? Number(searchParams.minPrice) : undefined;
   const maxPrice = typeof searchParams.maxPrice === "string" ? Number(searchParams.maxPrice) : undefined;
   const search = typeof searchParams.q === "string" ? searchParams.q : undefined;
+  const descuentos = typeof searchParams.descuentos === "string" ? searchParams.descuentos : undefined;
   const sort = typeof searchParams.sort === "string" ? searchParams.sort : undefined;
 
   if (category) where.category = { slug: category };
@@ -28,6 +29,10 @@ export async function ProductGrid({ searchParams }: ProductGridProps) {
     where.price = {};
     if (minPrice !== undefined) where.price.gte = minPrice;
     if (maxPrice !== undefined) where.price.lte = maxPrice;
+  }
+
+  if (descuentos === "true") {
+    where.comparePrice = { not: null };
   }
 
   if (search) {
