@@ -37,15 +37,17 @@ export async function POST(request: Request) {
     });
 
     if (!pref) {
-      return NextResponse.json({ success: false, error: "Error al crear preferencia" }, { status: 500 });
+      return NextResponse.json({ success: false, error: "Error al crear preferencia con MercadoPago" }, { status: 500 });
     }
 
     return NextResponse.json({
       success: true,
       initPoint: pref.init_point,
       orderNumber: order.orderNumber,
+      sandbox: false,
     });
-  } catch {
-    return NextResponse.json({ success: false, error: "Error al procesar pago" }, { status: 500 });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : "Error desconocido";
+    return NextResponse.json({ success: false, error: msg, detail: String(error) }, { status: 500 });
   }
 }
