@@ -46,8 +46,13 @@ export async function POST(request: Request) {
       orderNumber: order.orderNumber,
       sandbox: false,
     });
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : "Error desconocido";
-    return NextResponse.json({ success: false, error: msg, detail: String(error) }, { status: 500 });
+  } catch (error: unknown) {
+    let msg = "Error desconocido";
+    if (error instanceof Error) msg = error.message;
+    else if (typeof error === "object" && error !== null) {
+      const obj = error as Record<string, unknown>;
+      msg = (obj.message as string) || (obj.cause as string) || JSON.stringify(obj);
+    } else if (typeof error === "string") msg = error;
+    return NextResponse.json({ success: false, error: msg }, { status: 500 });
   }
 }

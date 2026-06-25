@@ -39,9 +39,14 @@ export async function createPreference(data: {
       },
     });
     return result;
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.error("MercadoPago createPreference error:", msg);
+  } catch (error: unknown) {
+    let msg = "Error desconocido";
+    if (error instanceof Error) msg = error.message;
+    else if (typeof error === "object" && error !== null) {
+      const obj = error as Record<string, unknown>;
+      msg = (obj.message as string) || (obj.cause as string) || JSON.stringify(obj);
+    } else if (typeof error === "string") msg = error;
+    console.error("MercadoPago createPreference error:", msg, error);
     throw error;
   }
 }
