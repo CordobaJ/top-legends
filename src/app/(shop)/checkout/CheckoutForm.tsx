@@ -93,7 +93,13 @@ export function CheckoutForm() {
         body: JSON.stringify({ orderId: data.orderId }),
       });
 
-      const payData = await payRes.json();
+      let payData;
+      try {
+        payData = await payRes.json();
+      } catch {
+        setError("Error al procesar respuesta de pago");
+        return;
+      }
 
       if (!payRes.ok) {
         setError(payData.error || payData.detail || "Error al procesar el pago");
@@ -105,6 +111,9 @@ export function CheckoutForm() {
       } else if (payData.initPoint) {
         window.location.href = payData.initPoint;
       }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error inesperado";
+      setError(msg);
     } finally {
       setLoading(false);
     }
