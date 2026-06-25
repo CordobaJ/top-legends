@@ -34,18 +34,23 @@ export async function POST(request: Request) {
       const base64 = buffer.toString("base64");
       const dataUri = `data:${file.type};base64,${base64}`;
 
-      const result = await cloudinary.uploader.upload(dataUri, {
-        folder: "top-legends/products",
-        transformation: [
-          { quality: "auto", fetch_format: "auto" },
-          { width: 1200, height: 1200, crop: "limit" },
-        ],
-      });
+      try {
+        const result = await cloudinary.uploader.upload(dataUri, {
+          folder: "top-legends/products",
+          transformation: [
+            { quality: "auto", fetch_format: "auto" },
+            { width: 1200, height: 1200, crop: "limit" },
+          ],
+        });
 
-      return NextResponse.json({
-        success: true,
-        data: { url: result.secure_url, publicId: result.public_id },
-      });
+        return NextResponse.json({
+          success: true,
+          data: { url: result.secure_url, publicId: result.public_id },
+        });
+      } catch (cloudErr) {
+        const msg = cloudErr instanceof Error ? cloudErr.message : String(cloudErr);
+        return NextResponse.json({ success: false, error: "Cloudinary: " + msg }, { status: 500 });
+      }
     }
 
     const ext = file.name.split(".").pop() ?? "jpg";
@@ -59,7 +64,8 @@ export async function POST(request: Request) {
       success: true,
       data: { url: `/images/products/${fileName}`, publicId: fileName },
     });
-  } catch {
-    return NextResponse.json({ success: false, error: "Error al subir imagen" }, { status: 500 });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ success: false, error: "Error al subir imagen: " + msg }, { status: 500 });
   }
 }
