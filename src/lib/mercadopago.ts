@@ -10,12 +10,13 @@ export async function createPreference(data: {
   items: { title: string; quantity: number; unit_price: number }[];
   externalReference: string;
   payerEmail?: string;
+  baseUrl?: string;
 }) {
   if (!mercadopagoClient) return null;
 
   const preference = new Preference(mercadopagoClient);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000");
+  const baseUrl = data.baseUrl || process.env.NEXT_PUBLIC_APP_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000");
 
   try {
     const result = await preference.create({

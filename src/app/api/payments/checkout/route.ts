@@ -9,6 +9,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { orderId } = body;
 
+    const origin = request.headers.get("origin") || request.headers.get("x-forwarded-host") || process.env.NEXT_PUBLIC_APP_URL || `https://${process.env.NEXT_PUBLIC_VERCEL_URL || "top-legends.vercel.app"}`;
+    const baseUrl = origin.startsWith("http") ? origin : `https://${origin}`;
+
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true, user: true },
@@ -34,6 +37,7 @@ export async function POST(request: Request) {
       })),
       externalReference: order.orderNumber,
       payerEmail: session?.user?.email ?? undefined,
+      baseUrl,
     });
 
     if (!pref) {
