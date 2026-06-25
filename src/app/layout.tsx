@@ -26,13 +26,13 @@ export const metadata: Metadata = {
   },
   description: "Tu tienda especializada en productos de fútbol. Camisetas de clubes, selecciones nacionales, retro y uniformes completos.",
   icons: {
-    icon: "/images/ui/logo.jpeg",
+    icon: "/images/ui/logo.png",
   },
   openGraph: {
     type: "website",
     locale: "es_CO",
     siteName: "Top Legends",
-    images: [{ url: "/images/ui/logo.jpeg" }],
+    images: [{ url: "/images/ui/logo.png" }],
   },
 };
 
